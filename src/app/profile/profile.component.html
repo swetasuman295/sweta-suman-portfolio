@@ -1,0 +1,122 @@
+<body>
+    <nav class="nav" id="navbar">
+        <div class="nav-content">
+            <div class="logo">{{ profile.initials }}</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#certifications">Certifications</a></li>
+                <li><a href="#fun">Fun Facts</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="hero" id="home">
+        <div class="hero-content">
+          <img src="assets/sweta.jpeg" alt="Sweta Suman Profile Photo"
+     style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+
+            <h1>{{ profile.name }}</h1>
+            <p class="hero-tagline">{{ profile.tagline }}</p>
+            <div class="hero-buttons">
+                <a href="#about" class="btn btn-primary">Get to Know Me</a>
+                <a href="#contact" class="btn btn-secondary">Let's Talk</a>
+                <a href="assets/Sweta-Suman-Resume.pdf" class="btn btn-secondary" download>Download Resume</a>
+            </div>
+        </div>
+    </section>
+    <section class="about" id="about">
+        <h2 class="section-title">Who Am I Really?</h2>
+        <div class="about-grid">
+            <div class="about-image">{{ profile.initials }}</div>
+            <div class="about-content">
+                <h3>{{ profile.about.heading }}</h3>
+                <p>{{ profile.about.paragraph1 }}</p>
+                <p>{{ profile.about.paragraph2 }}</p>
+                <p><strong>My Philosophy:</strong> {{ profile.philosophy }}</p>
+            </div>
+        </div>
+        <div class="personality-traits">
+            <div class="trait-card" *ngFor="let trait of profile.traits">
+                <div class="trait-icon">{{ trait.icon }}</div>
+                <h4>{{ trait.title }}</h4>
+                <p>{{ trait.description }}</p>
+            </div>
+        </div>
+    </section>
+    <section class="skills" id="skills">
+        <div class="skills-container">
+            <h2 class="section-title">What I Actually Know</h2>
+            <div class="skills-grid">
+                <div class="skill-category" *ngFor="let role of roles">
+                    <h3>
+                        <span *ngIf="role.name === 'Backend Developer'">⚡</span>
+                        <span *ngIf="role.name === 'Full Stack Engineer'">🎨</span>
+                        <span *ngIf="role.name === 'Cloud Developer'">☁️</span>
+                        <span *ngIf="role.name === 'Architecture Expert'">🏗️</span>
+                        {{ role.name }}
+                    </h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag" *ngFor="let skill of role.skills">{{ skill }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="experience" id="experience">
+      <div class="experience-container">
+        <h2 class="section-title">Career Timeline</h2>
+        <div class="timeline-navigation">
+          <button *ngFor="let item of timeline; let i = index" 
+                  (click)="selectTimelineItem(i)" 
+                  [class.active]="selectedTimelineItemIndex === i">
+            <h3>{{ item.company }}</h3>
+            <p>{{ item.years }}</p>
+          </button>
+        </div>
+        <div class="timeline-details">
+          <ul class="key-points">
+            <li *ngFor="let achievement of timeline[selectedTimelineItemIndex].achievements">{{ achievement }}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="passions" id="passions">
+      <div class="passions-container">
+        <h2 class="section-title">Life Beyond Code</h2>
+        <div class="facts-grid">
+          <div class="fact-card" *ngFor="let passion of passions">
+            <h4>{{ passion.title }}</h4>
+            <p>{{ passion.description }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="fun-facts" id="fun">
+        <div class="fun-facts-container">
+            <h2 class="section-title">The Fun Stuff</h2>
+            <div class="facts-grid">
+                <div class="fact-card" *ngFor="let fact of profile.funFacts">
+                    <h4>{{ fact.title }}</h4>
+                    <p>{{ fact.description }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2 class="section-title">Let's Build Something Cool</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                Whether you need someone to architect your next big thing, debug that nightmare legacy system, or just want to chat about the latest Java features over coffee - I'm your person.
+            </p>
+            <div class="contact-info">
+                <div class="contact-item" *ngFor="let contact of profile.contacts">
+                    <span>{{ contact.icon }}</span>
+                    <span>{{ contact.value }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>

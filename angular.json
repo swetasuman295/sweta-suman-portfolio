@@ -14,18 +14,17 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/sweta-suman-portfolio",
+             "baseHref": "/sweta-suman-portfolio/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+             "assets": [
+    "src/favicon.ico",
+    "src/assets"
+  ],
             "styles": [
               "src/styles.css"
             ],
@@ -79,11 +78,9 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+    "src/favicon.ico",
+    "src/assets"
+  ],
             "styles": [
               "src/styles.css"
             ],
