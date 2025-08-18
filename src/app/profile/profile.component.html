@@ -1,36 +1,55 @@
-<body>
-    <nav class="nav" id="navbar">
+
+<div class="overlay" 
+     [class.active]="isMobileMenuOpen" 
+     (click)="toggleMobileMenu()">
+</div><body>
+    
+   <nav class="nav" [class.visible]="navVisible">
         <div class="nav-content">
             <div class="logo">{{ profile.initials }}</div>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#certifications">Certifications</a></li>
-                <li><a href="#fun">Fun Facts</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a (click)="scrollToSection('home')">Home</a></li>
+                <li><a (click)="scrollToSection('about')">About</a></li>
+                <li><a (click)="scrollToSection('skills')">Skills</a></li>
+                <li><a (click)="scrollToSection('experience')">Experience</a></li>
+                <li><a (click)="scrollToSection('fun')">Fun Facts</a></li>
+                <li><a (click)="scrollToSection('contact')">Contact</a></li>
             </ul>
+            <button class="mobile-menu-toggle" 
+        [class.open]="isMobileMenuOpen" 
+        (click)="toggleMobileMenu()">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+        </div>
+        <div class="mobile-menu" [class.active]="isMobileMenuOpen">
+            <a (click)="scrollToSection('home')">Home</a>
+            <a (click)="scrollToSection('about')">About</a>
+            <a (click)="scrollToSection('skills')">Skills</a>
+            <a (click)="scrollToSection('experience')">Experience</a>
+            <a (click)="scrollToSection('fun')">Fun Facts</a>
+            <a (click)="scrollToSection('contact')">Contact</a>
         </div>
     </nav>
-    <section class="hero" id="home">
-        <div class="hero-content">
-          <img src="assets/sweta.jpeg" alt="Sweta Suman Profile Photo"
-     style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
 
+     <section class="hero" id="home">
+        <div class="hero-content">
+            <img src="assets/sweta.jpeg" alt="Sweta Suman Profile Photo" class="hero-image">
             <h1>{{ profile.name }}</h1>
             <p class="hero-tagline">{{ profile.tagline }}</p>
             <div class="hero-buttons">
-                <a href="#about" class="btn btn-primary">Get to Know Me</a>
-                <a href="#contact" class="btn btn-secondary">Let's Talk</a>
+                <a (click)="scrollToSection('about')" class="btn btn-primary">Get to Know Me</a>
+                <a (click)="scrollToSection('contact')" class="btn btn-secondary">Hire Me </a>
                 <a href="assets/Sweta-Suman-Resume.pdf" class="btn btn-secondary" download>Download Resume</a>
             </div>
         </div>
     </section>
+
     <section class="about" id="about">
         <h2 class="section-title">Who Am I Really?</h2>
         <div class="about-grid">
-            <div class="about-image">{{ profile.initials }}</div>
+            <div class="about-image"></div>
             <div class="about-content">
                 <h3>{{ profile.about.heading }}</h3>
                 <p>{{ profile.about.paragraph1 }}</p>
@@ -46,6 +65,7 @@
             </div>
         </div>
     </section>
+    
     <section class="skills" id="skills">
         <div class="skills-container">
             <h2 class="section-title">What I Actually Know</h2>

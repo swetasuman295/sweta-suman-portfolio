@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http'; 
+import { ContactService } from '../contact.service'; 
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,HttpClientModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-
+isLoading: boolean = true; 
   selectedRole: string = '';
+  isMobileMenuOpen = false;
+   navVisible = false;
 
   profile = {
     name: "Sweta Suman",
@@ -61,11 +65,13 @@ export class ProfileComponent implements OnInit {
 
   timeline = [
     {
-      company: 'YOU 🤓 ',
+      company: 'Why Hire Me 🤓 ',
       role: 'Software Developer',
       years: '??',
       achievements: [
-       'You know, I have spent over a decade making sure Java code is bug-free and scalable. But if you are asking me for a good joke, I have got a whole new set of bugs for you. My portfolio is a testament to my skills, but my sense of humor? That is just a free feature.'
+       'You know, I have spent over a decade making sure Java code is bug-free and scalable. But if you are asking me for a good joke, I have got a whole new set of bugs for you. My portfolio is a testament to my skills, but my sense of humor? That is just a free feature.',
+       '💡 I bring 10+ years of enterprise experience across Banking, ERP, Telecom, and Cloud platforms.',
+       '🎯 I am already in Netherlands with immediate availability - no visa delays or relocation costs.'
       ]
     },
     {
@@ -118,8 +124,23 @@ export class ProfileComponent implements OnInit {
       this.selectedRoleSkills = selectedRoleData.skills;
     }
   }
-
   selectTimelineItem(index: number): void {
     this.selectedTimelineItemIndex = index;
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+  }
+
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    this.closeMobileMenu();
   }
 }
