@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json()); // Parses incoming JSON requests
-app.use(cors()); // Enables cross-origin requests from your Angular app
+app.use(cors({ origin: 'http://localhost:4200'})); // Enables cross-origin requests from your Angular app
 
 // Contact form submission endpoint
 app.post('/api/contact', async (req, res) => {

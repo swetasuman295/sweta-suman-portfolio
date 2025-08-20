@@ -1,26 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http'; 
 import { ContactService } from '../contact.service'; 
+import { FormsModule } from '@angular/forms'; 
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule,HttpClientModule],
+  imports: [CommonModule,HttpClientModule,FormsModule],
+  providers: [ContactService],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy  {
 isLoading: boolean = true; 
   selectedRole: string = '';
   isMobileMenuOpen = false;
    navVisible = false;
-
+   scrollProgress: number = 0;
+  selectedTimelineItemIndex: number = 0;
+  
   profile = {
     name: "Sweta Suman",
-    title: "Senior Java Developer | Cloud Developer | Full Stack Engineer",
+    title: "Senior Software Engineer & Cloud Architect",
     initials: "SS",
-    tagline: "The Java Engineer Who Gets Things Done.",
+    tagline: "The Go-To Engineer for Cloud-Native and Full Stack Solutions",
     about: {
       heading: "Professional Summary",
       paragraph1: "I'm that developer who says 'nope' when something doesn't fit, asks for trendy tech because I actually keep up with the latest, and yes - I do throw in dad jokes during code reviews.",
@@ -56,9 +60,9 @@ isLoading: boolean = true;
   ];
 
   roles = [
-    { name: 'Backend Developer', role: 'backend', skills: ["Java 17+", "Spring Boot", "Virtual Threads", "Kafka", "REST APIs", "Microservices", "JPA/Hibernate"] },
+    { name: 'Backend Developer', role: 'backend', skills: ["Java 17+", "Spring Boot", "Virtual Threads", "Kafka", "REST APIs", "Microservices", "JPA/Hibernate","GIT" , "Jenkins"] },
     { name: 'Cloud Developer', role: 'cloud', skills: ["Azure (AZ-204)", "AWS", "Docker", "Kubernetes", "CI/CD", "Terraform"] },
-    { name: 'Full Stack Engineer', role: 'fullstack', skills: ["Angular 15+", "TypeScript", "RxJS", "HTML5/CSS3", "Bootstrap", "Material Design"] },
+    { name: 'Full Stack Engineer', role: 'fullstack', skills: ["Angular 17+", "TypeScript", "RxJS", "HTML5/CSS3", "Bootstrap", "Material Design"] },
     { name: 'Architecture Expert', role: 'architecture', skills: ["Domain Driven Design", "Event Sourcing", "CQRS", "System Design"] },
     { name: 'Certifications', role: 'certification', skills: ["Microsoft Certified Azure Developer", "AWS Certified Cloud Practitioner", "Infosys Certified Global Agile Developer"] }
   ];
@@ -109,14 +113,23 @@ isLoading: boolean = true;
     },
   ];
 
-  selectedTimelineItemIndex: number = 0;
+
   
   selectedRoleSkills: string[] = [];
-  
-  constructor() {}
+  constructor(private contactService: ContactService) {}
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1500);
+  }
+   ngAfterViewInit(): void {
+    this.setupScrollListeners();
+    this.setupIntersectionObservers();
+  }
 
-  ngOnInit(): void {}
-  
+  ngOnDestroy(): void {
+    window.removeEventListener('scroll', this.onScroll);
+  } 
   selectRole(role: string): void {
     this.selectedRole = role;
     const selectedRoleData = this.roles.find(r => r.role === role);
@@ -142,5 +155,62 @@ isLoading: boolean = true;
       element.scrollIntoView({ behavior: 'smooth' });
     }
     this.closeMobileMenu();
+  }
+
+onContactFormSubmit(formData: any) {
+    console.log("📩 Form data:", formData);
+
+    this.contactService.sendMessage(formData).subscribe({
+      next: (res) => {
+        console.log("✅ Message sent:", res);
+        alert("Message sent successfully!");
+      },
+      error: (err) => {
+        console.error("❌ Error sending message:", err);
+        alert("Failed to send message. Check console.");
+      }
+    });
+  }
+private setupScrollListeners(): void {
+    window.addEventListener('scroll', this.onScroll.bind(this));
+  }
+ private onScroll(): void {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+    this.scrollProgress = (scrollTop / windowHeight) * 100;
+
+    this.navVisible = scrollTop > 100;
+  }
+private setupIntersectionObservers(): void {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          if (entry.target.classList.contains('skill-category')) {
+            const skillBars = entry.target.querySelectorAll('.skill-progress') as NodeListOf<HTMLElement>;
+            skillBars.forEach(bar => {
+              const width = bar.getAttribute('data-width');
+              if (width) {
+                setTimeout(() => {
+                  bar.style.width = width + '%';
+                }, 300);
+              }
+            });
+          }
+        }
+      });
+    }, observerOptions);
+
+    setTimeout(() => {
+      const elementsToObserve = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .skill-category');
+      elementsToObserve.forEach(el => observer.observe(el));
+    }, 100);
   }
 }

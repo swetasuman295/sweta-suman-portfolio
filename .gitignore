@@ -44,3 +44,4 @@ Thumbs.db
 # Node.js backend
 .env
 /node_modules
+dist/
