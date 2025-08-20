@@ -88,18 +88,26 @@
       <div class="experience-container">
         <h2 class="section-title">Career Timeline</h2>
         <div class="timeline-navigation">
-          <button *ngFor="let item of timeline; let i = index" 
-                  (click)="selectTimelineItem(i)" 
-                  [class.active]="selectedTimelineItemIndex === i">
-            <h3>{{ item.company }}</h3>
-            <p>{{ item.years }}</p>
-          </button>
-        </div>
-        <div class="timeline-details">
-          <ul class="key-points">
-            <li *ngFor="let achievement of timeline[selectedTimelineItemIndex].achievements">{{ achievement }}</li>
-          </ul>
-        </div>
+  <div class="timeline-nav-wrapper">
+    <button *ngFor="let item of timeline; let i = index" 
+            (click)="goToTimelineItem(i)" 
+            [class.active]="selectedTimelineItemIndex === i">
+      <h3>{{ item.company }}</h3>
+      <p>{{ item.years }}</p>
+    </button>
+  </div>
+</div>
+       <div class="timeline-details">
+  <div *ngFor="let item of timeline; let i = index" 
+       [id]="'timeline-item-' + i" 
+       class="timeline-detail"
+       [class.active]="selectedTimelineItemIndex === i">
+    <ul class="key-points">
+      <li *ngFor="let achievement of item.achievements">{{ achievement }}</li>
+    </ul>
+  </div>
+</div>
+
       </div>
     </section>
     <section class="passions" id="passions">

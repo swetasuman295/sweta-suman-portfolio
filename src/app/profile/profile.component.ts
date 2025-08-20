@@ -137,9 +137,20 @@ isLoading: boolean = true;
       this.selectedRoleSkills = selectedRoleData.skills;
     }
   }
-  selectTimelineItem(index: number): void {
-    this.selectedTimelineItemIndex = index;
-  }
+goToTimelineItem(index: number) {
+  this.selectedTimelineItemIndex = index;
+   // Scroll to the timeline details section instead of the specific item
+  setTimeout(() => {
+    const timelineSection = document.querySelector('.timeline-details');
+    if (timelineSection) {
+      timelineSection.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' // This keeps it more centered instead of at the top
+      });
+    }
+  }, 0);
+}
+
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
