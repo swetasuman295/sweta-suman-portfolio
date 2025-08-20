@@ -1,5 +1,5 @@
 [build]
-  publish = "dist/your-project-name"
+  publish = "dist/sweta-suman-portfolio"
   command = "npm run build"
 
 [build.environment]
