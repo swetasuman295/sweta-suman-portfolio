@@ -1,7 +1,8 @@
 [build]
   publish = "docs/browser"
   command = "ng build --output-path docs --configuration production"
-  functions = "netlify/functions"
+  [functions]
+  directory = "netlify/functions"
 
 
 
