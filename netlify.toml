@@ -1,6 +1,6 @@
 [build]
   publish = "docs/browser"
-  command = ng build --output-path docs --base-href='./' --configuration production"
+  command = "ng build --output-path docs --base-href='./' --configuration production"
 
 [build.environment]
   NODE_VERSION = "20"
