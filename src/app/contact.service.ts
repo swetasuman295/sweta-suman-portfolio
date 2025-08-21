@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ContactService {
-  private apiUrl = '/api/contact';
+  private apiUrl = 'https://sweta-suman-portfolio.netlify.app/.netlify/functions/contact';
 
   constructor(private http: HttpClient) {}
 
