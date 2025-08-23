@@ -48,7 +48,10 @@
     <section class="about" id="about">
         <h2 class="section-title">Who Am I Really?</h2>
         <div class="about-grid">
-            <div class="about-image"></div>
+            <img src="assets/sweta1.jpeg" 
+     alt="Sweta Suman - About Me Photo" 
+     class="about-image"
+     loading="lazy">
             <div class="about-content">
                 <h3>{{ profile.about.heading }}</h3>
                 <p>{{ profile.about.paragraph1 }}</p>
@@ -150,9 +153,31 @@
   <div class="form-group">
     <input type="text" class="form-input" name="company" ngModel placeholder="Company/Role" required>
   </div>
-  <div class="form-group">
-    <textarea class="form-input form-textarea" name="message" ngModel placeholder="Tell me about the opportunity..." required></textarea>
-  </div>
+ <div class="form-group">
+    <div class="message-input-container">
+        <textarea class="form-input form-textarea" 
+                  name="message" 
+                  [(ngModel)]="contactMessage"
+                  placeholder="Tell me about the opportunity..." 
+                  required></textarea>
+        <button type="button" 
+                class="ai-assist-btn" 
+                (click)="generateAIMessage()"
+                title="AI Writing Assistant">
+            Need AI Assistance
+        </button>
+    </div>
+    <div class="ai-suggestions" *ngIf="aiSuggestions.length > 0">
+        <p>💡 AI Suggestions:</p>
+        <div class="suggestion-pills">
+            <span *ngFor="let suggestion of aiSuggestions" 
+                  class="suggestion-pill"
+                  (click)="applySuggestion(suggestion)">
+                {{suggestion}}
+            </span>
+        </div>
+    </div>
+</div>
   <button type="submit" class="btn btn-primary">
     <i class="fas fa-paper-plane"></i> Send Message
   </button>

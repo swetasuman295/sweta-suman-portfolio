@@ -224,4 +224,29 @@ private setupIntersectionObservers(): void {
       elementsToObserve.forEach(el => observer.observe(el));
     }, 100);
   }
+
+  // Add these properties
+contactMessage: string = '';
+aiSuggestions: string[] = [];
+
+// Add these methods
+generateAIMessage(): void {
+    this.aiSuggestions = [
+        "I need a backend architect for microservices migration",
+        "Looking for Azure cloud expertise for enterprise scaling", 
+        "Seeking full-stack developer for fintech application",
+        "Need Java Spring Boot expert for banking modernization",
+        "Require DevOps engineer for CI/CD automation",
+        "Looking for Kafka and event-driven architecture specialist"
+    ];
+}
+
+applySuggestion(suggestion: string): void {
+    if (this.contactMessage.trim()) {
+        this.contactMessage += '. ' + suggestion;
+    } else {
+        this.contactMessage = suggestion;
+    }
+    this.aiSuggestions = [];
+}
 }
