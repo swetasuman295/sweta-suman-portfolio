@@ -1,14 +1,16 @@
 import { Component, OnInit ,AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http'; 
-import { ContactService } from '../contact.service'; 
 import { FormsModule } from '@angular/forms'; 
+
+import { PortfolioApiService } from '../portfolio-api.services';
+import { WebSocketService } from '../websocket.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [CommonModule,HttpClientModule,FormsModule],
-  providers: [ContactService],
+  providers: [PortfolioApiService,WebSocketService],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -19,6 +21,16 @@ isLoading: boolean = true;
    navVisible = false;
    scrollProgress: number = 0;
   selectedTimelineItemIndex: number = 0;
+  contactSuccessMessage: string = '';
+  showSuccessAlert: boolean = false;
+  //Integration from backend
+  contactSubmitting = false;
+  contactSubmitted = false;
+  contactError: string | null = null;
+ contactResponse: any = null;
+private sessionStartTime = Date.now();
+private currentPage = 'home';
+liveStats: any = null;
   
   profile = {
     name: "Sweta Suman",
@@ -116,10 +128,25 @@ isLoading: boolean = true;
 
   
   selectedRoleSkills: string[] = [];
-  constructor(private contactService: ContactService) {}
+  constructor(
+    //Integration from backend
+    private portfolioApi: PortfolioApiService, 
+    private webSocketService: WebSocketService 
+  ) {}
   ngOnInit(): void {
     setTimeout(() => {
       this.isLoading = false;
+      this.trackVisitorSession();
+      this.checkBackendHealth();
+      // 👇 5. CONNECT and SUBSCRIBE to WebSocket updates
+      this.webSocketService.connect();
+      this.webSocketService.liveStats$.subscribe(stats => {
+        if (stats) {
+          this.liveStats = stats;
+          // Optional: Show a notification for new visitors
+          this.showRealtimeNotification(`Active viewers: ${stats.activeViewers}`);
+        }
+      });
     }, 1500);
   }
    ngAfterViewInit(): void {
@@ -129,7 +156,11 @@ isLoading: boolean = true;
 
   ngOnDestroy(): void {
     window.removeEventListener('scroll', this.onScroll);
+    this.webSocketService.disconnect();
   } 
+
+
+
   selectRole(role: string): void {
     this.selectedRole = role;
     const selectedRoleData = this.roles.find(r => r.role === role);
@@ -160,28 +191,112 @@ goToTimelineItem(index: number) {
     this.isMobileMenuOpen = false;
   }
 
+ /**
+   * Scroll to section with tracking
+   */
   scrollToSection(sectionId: string): void {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    this.closeMobileMenu();
+  const timeSpent = Math.floor((Date.now() - this.sessionStartTime) / 1000);
+  
+  // Track page view
+  this.portfolioApi.trackPageView(sectionId, this.currentPage, timeSpent).subscribe({
+    next: () => {},
+    error: () => {} // Fail silently
+  });
+  
+  this.currentPage = sectionId;
+  this.sessionStartTime = Date.now();
+  
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
   }
+  this.closeMobileMenu();
+}
+  
 
 onContactFormSubmit(formData: any) {
-    console.log("📩 Form data:", formData);
+  this.contactSubmitting = true;
+  this.contactError = null;
+  this.showSuccessAlert = false;
+  
+  this.portfolioApi.submitContact(formData).subscribe({
+    next: (response) => {
+      this.contactSubmitting = false;
+      this.contactSubmitted = true;
+      
+      // Store the full response for enhanced display
+      this.contactResponse = response;
+      this.contactSuccessMessage = response.message;
+      this.showSuccessAlert = true;
+      
+      // Clear form
+      this.contactMessage = '';
+      
+      // Hide success message after 60 seconds
+      setTimeout(() => {
+        this.showSuccessAlert = false;
+        this.contactSubmitted = false;
+        this.contactResponse = null;
+      }, 60000);
+    },
+    error: (error) => {
+      this.contactSubmitting = false;
+      
+      if (error.status === 400 && error.error) {
+        const errors = typeof error.error === 'object' 
+          ? Object.values(error.error).join(', ')
+          : error.error;
+        this.contactError = errors || 'Invalid input';
+      } else {
+        this.contactError = 'Failed to send message. Please try again.';
+      }
+    }
+  });
+}
 
-    this.contactService.sendMessage(formData).subscribe({
-      next: (res) => {
-        console.log("✅ Message sent:", res);
-        alert("Message sent successfully!");
+
+  /**
+   * Check if backend is running
+   */
+  private checkBackendHealth(): void {
+    this.portfolioApi.checkHealth().subscribe({
+      next: (response) => {
+        console.log('✅ Backend is healthy:', response);
       },
-      error: (err) => {
-        console.error("❌ Error sending message:", err);
-        alert("Failed to send message. Check console.");
+      error: (error) => {
+        console.warn('⚠️ Backend might be offline:', error);
+        // Still allow the portfolio to work without backend
       }
     });
   }
+  
+ 
+  private showRealtimeNotification(message: string): void {
+    // Create a visual notification
+    const notification = document.createElement('div');
+    notification.className = 'realtime-notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      padding: 15px;
+      background: #667eea;
+      color: white;
+      border-radius: 8px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  }
+
+
 private setupScrollListeners(): void {
     window.addEventListener('scroll', this.onScroll.bind(this));
   }
@@ -225,11 +340,11 @@ private setupIntersectionObservers(): void {
     }, 100);
   }
 
-  // Add these properties
+  
 contactMessage: string = '';
 aiSuggestions: string[] = [];
 
-// Add these methods
+
 generateAIMessage(): void {
     this.aiSuggestions = [
         "I need a backend architect for microservices migration",
@@ -248,5 +363,11 @@ applySuggestion(suggestion: string): void {
         this.contactMessage = suggestion;
     }
     this.aiSuggestions = [];
+}
+private trackVisitorSession(): void {
+  this.portfolioApi.trackVisitorSession().subscribe({
+    next: () => console.log('Session tracked'),
+    error: () => {} // Fail silently if backend is offline
+  });
 }
 }
