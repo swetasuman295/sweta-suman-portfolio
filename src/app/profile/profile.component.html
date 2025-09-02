@@ -1,11 +1,9 @@
 
-<div class="overlay" 
-     [class.active]="isMobileMenuOpen" 
-     (click)="toggleMobileMenu()">
-
-
-
-</div><body>
+<div (click)="toggleMobileMenu()" 
+     (keydown.enter)="toggleMobileMenu()" 
+     tabindex="0">
+</div>
+<body>
    <nav class="nav" [class.visible]="navVisible">
         <div class="nav-content">
             <div class="logo">{{ profile.initials }}</div>
@@ -35,7 +33,7 @@
 
      <section class="hero" id="home">
         <div class="hero-content">
-            <img src="assets/sweta.jpeg" alt="Sweta Suman Profile Photo" class="hero-image">
+            <img src="assets/sweta.jpeg" alt="Sweta Suman" class="hero-image">
             <h1>{{ profile.name }}</h1>
             <h2 class="hero-title">{{ profile.title }}</h2>
             <p class="hero-tagline">{{ profile.tagline }}</p>
@@ -59,7 +57,7 @@
         <h2 class="section-title">Who Am I Really?</h2>
         <div class="about-grid">
             <img src="assets/sweta1.jpeg" 
-     alt="Sweta Suman - About Me Photo" 
+     alt="Sweta Suman - About Me" 
      class="about-image"
      loading="eager">
             <div class="about-content">
