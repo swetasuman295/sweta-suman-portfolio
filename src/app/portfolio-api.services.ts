@@ -7,7 +7,7 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PortfolioApiService {
-  private apiUrl = 'http://localhost:8081/api';  
+  private apiUrl = '/api';  
   
   constructor(private http: HttpClient) {}
   
@@ -109,7 +109,7 @@ export class PortfolioApiService {
  * Track visitor session
  */
 trackVisitorSession(): Observable<any> {
-  return this.http.post('http://localhost:8081/api/visitor/session', {})
+  return this.http.post(`${this.apiUrl}/visitor/session`, {})
     .pipe(
       catchError(error => {
         console.warn('Visitor tracking failed:', error);
@@ -128,7 +128,7 @@ trackPageView(page: string, previousPage?: string, timeSpent?: number): Observab
     timeSpent
   };
   
-  return this.http.post('http://localhost:8081/api/visitor/pageview', payload)
+  return this.http.post(`${this.apiUrl}/visitor/pageview`, payload)
     .pipe(
       catchError(error => {
         console.warn('Page view tracking failed:', error);
@@ -136,5 +136,7 @@ trackPageView(page: string, previousPage?: string, timeSpent?: number): Observab
       })
     );
 }
-
+trackVisitorSessionWithId(sessionId: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/visitor/session-with-id`, { sessionId });
+}
 }

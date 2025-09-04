@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as Stomp from 'webstomp-client';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../environments/environment'; 
 
 @Injectable({
   providedIn: 'root'
