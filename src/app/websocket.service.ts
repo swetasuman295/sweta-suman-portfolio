@@ -17,7 +17,7 @@ export class WebSocketService {
    */
   public connect(): void {
     // The endpoint we configured in the Spring Boot backend
-    const socket = new SockJS('http://localhost:8081/api/ws');
+    const socket = new SockJS(environment.wsUrl);
     this.stompClient = Stomp.over(socket);
 
     // Disable the default console logging from the STOMP client
