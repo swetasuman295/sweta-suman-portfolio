@@ -1,11 +1,30 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { Component } from '@angular/core';
+import { ProfileComponent } from './profile/profile.component';
+
+@Component({
+  selector: 'app-profile',
+  standalone: true,
+  template: '<div>Mock Profile Component</div>'
+})
+class MockProfileComponent { }
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: any;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-    }).compileComponents();
+       providers: []
+    })
+    .overrideComponent(AppComponent, {
+      remove: { imports: [ProfileComponent] },
+      add: { imports: [MockProfileComponent] }
+    })
+    .compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the app', () => {
