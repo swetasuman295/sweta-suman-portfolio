@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: '/api',
-  wsUrl: '/api/ws'
+    apiUrl: 'https://api.familyhomecloud.synology.me/api',
+    wsUrl: 'wss://api.familyhomecloud.synology.me/api/ws'
 };
