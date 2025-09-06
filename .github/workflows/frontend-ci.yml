@@ -34,13 +34,16 @@ jobs:
       - name: Build
         run: npm run build --configuration=production --base-href="/sweta-suman-portfolio/"
         
+      - name: Copy index.html for 404 fallback
+        run: cp ./dist/sweta-suman-portfolio/browser/index.html ./dist/sweta-suman-portfolio/browser/404.html
+          
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist/sweta-suman-portfolio
+          path: ./dist/sweta-suman-portfolio/browser
 
   deploy:
     environment:
