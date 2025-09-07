@@ -87,7 +87,7 @@
             "watch": false,
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing","src/test-setup.ts"
             ], "browsers": "ChromeHeadless",
             "tsConfig": "tsconfig.spec.json",
             "assets": [
