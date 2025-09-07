@@ -10,6 +10,7 @@ import { ProfileComponent } from './profile/profile.component';
 })
 class MockProfileComponent { }
 
+(window as any).global = window;
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: any;
@@ -43,6 +44,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, sweta-suman-portfolio');
-  });
+    expect(compiled.querySelector('app-profile')).toBeTruthy();});
 });
